@@ -1,10 +1,20 @@
-# TODO
-* Both app and gateway databases should be created and initialized in InitDatabase/*.sql files
-* ### MOVE THAT FUCKING DB CREATION FROM BACKEND TO INIT_USER_DATABSE>SQL
-* add testing
+# Running this project in dev env
+On linux with docker installed, or WSL with integrated docker desktop, just run the following command in the cloned project directory:
+`docker compose -f docker-compose.dev.yml up --build -d`. Linux/WSL is required since spring hot-reloads depend on inotifywait.
+## On windows as newbie
 
-# Running the app
-docker compose -f docker-compose.dev.yml up --build -d
+* In powershell: `wsl --install ubuntu`
+* After completing instalation clone repo with: `https://github.com/Muszchrom/unhealthy-cherry.git`
+* Cd into project directory: `cd unhealthy-cherry`
+* Open project in VS Code `code .` (Other IDEs might work too.) 
+* In docker desktop, go to: Settings > Resources > WSL integration and check `Enable integration with my default WSL distro` and `Enable integration with additional distros`: `Ubuntu`
+* Go back to Ubuntu (or open vs code console) and try running `docker` command. You should see bunch of text. If you've got an error, try restarting PC.
+* Finally build and run containers: `docker compose -f docker-compose.dev.yml up --build -d`
+
+If you're having trouble with getting back to ubuntu CLI try:
+* Typing ubuntu in windows search bar
+* (Win 11) Clicking down-facing arrow next to "Open a new tab" and selecting ubuntu
+* Running `wsl --distribution <Distribution Name> --user <User Name>` in PS
 
 # Backend
 * Invalid requests typically result in responses with `text/plain;charset=UTF-8` Content-Type.
@@ -67,5 +77,5 @@ This is basically an auth wrapper for backend
 ## Databse
 * user database is created in InitDatabase/init-user-database.sql
 * admin is created in InitDatabase/init-user-database.sql
-* if you want to edit init-user-database.sql, you would need to delete this database container and rebuild the app. Doing so requires backend app restart, since Photos db is created in THAT JAVA APP FFS!!!!
+* if you want to edit init-user-database.sql, you would need to delete this database container and rebuild the app. Doing so requires backend app restart, since Photos db is created in that java app.
 

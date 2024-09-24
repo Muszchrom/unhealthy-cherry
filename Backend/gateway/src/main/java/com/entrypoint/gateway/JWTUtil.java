@@ -16,7 +16,7 @@ public class JWTUtil {
   private static byte[] decodedKey = System.getenv("SECRET_KEY").getBytes(StandardCharsets.UTF_8);
   private static SecretKey secretKey = Keys.hmacShaKeyFor(decodedKey); // and this not
   
-  //                    ↓ number of hours so like n*(an hour)
+  //                                  ↓ number of hours so like n*(an hour)
   private static Long jwtExpiration = 2L*(60*60*1000);
 
   public static String generateToken(String username, Boolean isAdmin) {
