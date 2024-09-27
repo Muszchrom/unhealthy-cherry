@@ -7,11 +7,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Table("user_db")
 public class User {
-  @Id
+  @Column("id") @Id
   private Long id;
+  @Column("password")
   private String password;
+  @Column("username")
   private String username;
-  @Column("isadmin")
+  @Column("is_admin")
   private Boolean isAdmin;
 
   public User(String password, String username, Boolean isAdmin) {

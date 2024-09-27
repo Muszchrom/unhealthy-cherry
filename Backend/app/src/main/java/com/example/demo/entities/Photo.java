@@ -3,9 +3,6 @@ package com.example.demo.entities;
 import java.sql.Timestamp;
 import java.util.Objects;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,38 +10,40 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 // @Entity is a JPA annotation to make this object ready for storage in a JPA-based data store.
 @Entity
+@Table(name="photo")
 public class Photo {
 
-  @Column @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
+  @Column(name="id", nullable=false, unique=true) 
+  @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
   private Long id;
   
-  @Column(unique=true, nullable=false)
+  @Column(name="file_name", nullable=false, unique=true)
   private String fileName;
 
-  @Column(nullable=false)
+  @Column(name="file_extension", nullable=false)
   private String fileExtension;
 
   @ManyToOne
   @JoinColumn(name="place_id", nullable=false)
-  @OnDelete(action=OnDeleteAction.CASCADE)
   private Place place;
 
-  @Column
+  @Column(name="description")
   private String description; 
   
-  @Column(columnDefinition="boolean default false", nullable=false)
+  @Column(name="is_best", nullable=false)
   private Boolean isBest=false; // Every 300 photos should have 10-30 best ones
   
-  @Column
+  @Column(name="country")
   private String country;
 
-  @Column
+  @Column(name="camera")
   private String camera;
   
-  @Column
+  @Column(name="datetime")
   private Timestamp datetime;
 
 

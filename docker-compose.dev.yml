@@ -12,7 +12,7 @@ services:
     environment:
       POSTGRES_USER: student
       POSTGRES_PASSWORD: student
-      POSTGRES_URL: jdbc:postgresql://database:5432/student
+      POSTGRES_URL: jdbc:postgresql://database:5432/photos_database
     volumes:
       - ./Backend/app/:/app
       - ./Files/:/files

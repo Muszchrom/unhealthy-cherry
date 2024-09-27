@@ -10,20 +10,24 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name="category")
 public class Category {
 
-  @Column @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
+  @Column(name="id", nullable=false, unique=true) 
+  @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
   private Long id;
 
-  @Column(unique=true, nullable=false)
+  // length=255 is the default value, that's why it's ommited
+  @Column(name="category", nullable=false, unique=true)
   private String category;
 
-  @Column(unique=true, nullable=false)
+  @Column(name="category_as_path_variable", nullable=false, unique=true)
   private String categoryAsPathVariable;
 
-  @OneToMany(mappedBy="category", cascade=CascadeType.REMOVE, orphanRemoval=true)
+  @OneToMany(mappedBy="category", cascade=CascadeType.ALL, orphanRemoval=true)
   private List<Place> places;
 
 

@@ -3,9 +3,6 @@ package com.example.demo.entities;
 import java.util.List;
 import java.util.Objects;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,24 +16,27 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(uniqueConstraints={@UniqueConstraint(columnNames={"category_id", "place"})})
+@Table(name="place", uniqueConstraints={
+  @UniqueConstraint(columnNames={"category_id", "place"}),
+  @UniqueConstraint(columnNames={"category_id", "place_as_path_variable"})
+})
 public class Place {
 
-  @Column @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
+  @Column(name="id", nullable=false, unique=true) 
+  @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable=false)
+  @Column(name="place", nullable=false)
   private String place;
 
-  @Column(nullable=false)
+  @Column(name="place_as_path_variable", nullable=false)
   private String placeAsPathVariable;
 
   @ManyToOne
   @JoinColumn(name="category_id", nullable=false)
-  @OnDelete(action=OnDeleteAction.CASCADE)
   private Category category;
 
-  @OneToMany(mappedBy="place", cascade=CascadeType.REMOVE, orphanRemoval=true)
+  @OneToMany(mappedBy="place", cascade=CascadeType.ALL, orphanRemoval=true)
   private List<Photo> photos;
 
   public Place() {}
