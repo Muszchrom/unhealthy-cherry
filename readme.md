@@ -16,12 +16,32 @@ If you're having trouble with getting back to ubuntu CLI try:
 * (Win 11) Clicking down-facing arrow next to "Open a new tab" and selecting ubuntu
 * Running `wsl --distribution <Distribution Name> --user <User Name>` in PS
 
-# Backend
+## Backend
 * Invalid requests typically result in responses with `text/plain;charset=UTF-8` Content-Type.
 * Always use @Column("name") annotation since for example R2DBC reads isAdmin as is_admin instead of isadmin
 * Read `Database` section from readme.md
 * Admin should be created manually in pgadmin.
-* Only admin can create new users
+* Only admin can create new users 
+* REST (by Roy Fielding deffinition) is currently lacking HATEOAS, example response should look like: 
+
+```
+HTTP/1.1 200 OK
+{
+    "account": {
+        "account_number": 12345,
+        "balance": {
+            "currency": "usd",
+            "value": 100.00
+        },
+        "links": {
+            "deposits": "/accounts/12345/deposits",
+            "withdrawals": "/accounts/12345/withdrawals",
+            "transfers": "/accounts/12345/transfers",
+            "close-requests": "/accounts/12345/close-requests"
+        }
+    }
+}
+```
 
 ### /categories
 * 😎 @Get
@@ -46,7 +66,7 @@ If you're having trouble with getting back to ubuntu CLI try:
 * 🛡️ @Patch +/{id}
 * 🛡️ @Delete +/{id}
 
-# Gateway
+## Gateway
 This is basically an auth wrapper for backend
 
 ### /login
@@ -55,15 +75,15 @@ This is basically an auth wrapper for backend
 ### /logout
 * 😎 @Get
 
-### /register (todo)
+### /user (todo)
+* 🛡️ @Post - PRIO (register new user)
 * 🛡️ @Get
-* 🛡️ @Post - PRIO
 * 🛡️ @Patch
 * 🛡️ @Delete
 
-# pgAdmin4
+## pgAdmin4
 
-## Connecting to PostgreSQL server
+### Connecting to PostgreSQL server
 * On host go to `localhost:5420`
 * Right click Servers, located on the left side of browser window, then select Register, server
 * Fill in Name field with whatever name you like
@@ -75,7 +95,6 @@ This is basically an auth wrapper for backend
   * Password: `student`
 
 ## Databse
-* user database is created in InitDatabase/init-user-database.sql
-* admin is created in InitDatabase/init-user-database.sql
-* if you want to edit init-user-database.sql, you would need to delete this database container and rebuild the app. Doing so requires backend app restart, since Photos db is created in that java app.
-
+* Tables are created in `InitDatabase` directory
+* Admin is created in InitDatabase/init-user-database.sql
+* If you want to edit .sql files, you will need to rebuild the database container after making the changes.
