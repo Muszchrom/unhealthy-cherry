@@ -5,6 +5,9 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 /**
  * This entitie's constructor doesn't hash password by default.
  * To hash the password, you need to manually run 
@@ -23,6 +26,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class User {
   @Column("id") @Id
   private Long id;
+  @JsonProperty(access = Access.WRITE_ONLY)
   @Column("password")
   private String password;
   @Column("username")
