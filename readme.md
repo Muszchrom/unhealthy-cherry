@@ -96,5 +96,4 @@ This is basically an auth wrapper for backend
 
 ## Databse
 * Tables are created in `InitDatabase` directory
-* Admin is created in InitDatabase/init-user-database.sql
 * If you want to edit .sql files, you will need to rebuild the database container after making the changes.
