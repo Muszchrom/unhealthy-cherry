@@ -5,6 +5,20 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+/**
+ * This entitie's constructor doesn't hash password by default.
+ * To hash the password, you need to manually run 
+ * {@link #setPassword setPassword(String)} or 
+ * {@link #hashPassword hashPassword()} method.
+ * This behavior lets you validate the password by for example, checking it's length. 
+ * <pre class="code">
+ * public Mono&lt;User&gt; register(@RequestBody User user) {<br>
+ *   if (user.getPassword().length() < 8) throw new RuntimeException();
+ *   user.setPassword(user.getPassword()); // hashing the password
+ *   return userRepository.save(user);
+ * }
+ * <pre class="code">
+ */
 @Table("user_db")
 public class User {
   @Column("id") @Id
@@ -30,8 +44,13 @@ public class User {
     return this.username;
   }
 
-  // this is actually an autistic take
+  // this is actually an bad take
   // like why would someone manually change password
+  // To read it's length? XD
+  /**
+   * You can't get plain password after hashing it
+   * @return Either plain or hashed password
+   */
   public String getPassword() {
     return this.password;
   }
@@ -44,6 +63,10 @@ public class User {
     this.id = id;
   }
 
+  /**
+   * Set and hash the password at the same time.
+   * @param password a password to be set and hashed.
+   */
   public void setPassword(String password) {
     this.password = new BCryptPasswordEncoder().encode(password);
   }
@@ -54,6 +77,13 @@ public class User {
 
   public void setIsAdmin(Boolean isAdmin) {
     this.isAdmin = isAdmin;
+  }
+
+  /**
+   * Hash the current password.
+   */
+  public void hashPassword() {
+    this.password = new BCryptPasswordEncoder().encode(this.password);
   }
 
   @Override
