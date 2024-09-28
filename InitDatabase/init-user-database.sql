@@ -12,15 +12,3 @@ CREATE TABLE IF NOT EXISTS public.user_db (
   UNIQUE(username),
   PRIMARY KEY(id)
 );
-
-INSERT INTO user_db(
-  username, 
-  password, 
-  is_admin
-) VALUES ('student', 'student', true);
-
-INSERT INTO user_db(
-  username, 
-  password, 
-  is_admin
-) VALUES ('student1', 'student1', false);

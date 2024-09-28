@@ -33,6 +33,9 @@ services:
       POSTGRES_PASSWORD: student
       POSTGRES_URL: r2dbc:postgresql://database:5432/user_database
       DATABASE_NAME: user_database
+
+      ADMIN_UNAME: student
+      ADMIN_PASSWORD: student
     volumes:
       - ./Backend/gateway/:/app
 
