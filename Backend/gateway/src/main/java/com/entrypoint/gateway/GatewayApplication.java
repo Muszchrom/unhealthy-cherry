@@ -28,7 +28,7 @@ public class GatewayApplication {
   @Bean
   public RouteLocator myRoutes(RouteLocatorBuilder builder) {
     return builder.routes()
-      .route("Normal users for Photos app", p -> p
+      .route("😎 Normal users for Photos app", p -> p
         .path("/photos/**")
         .and()
         .method(HttpMethod.GET)
@@ -39,7 +39,7 @@ public class GatewayApplication {
         })
         .uri("http://backend:8080"))
       
-      .route("Admin for Photos app", p -> p
+      .route("🛡️ Admin for Photos app", p -> p
         .path("/photos/**")
         .and()
         .method(HttpMethod.POST, HttpMethod.PUT, HttpMethod.PATCH, HttpMethod.DELETE)
@@ -51,8 +51,20 @@ public class GatewayApplication {
         })
         .uri("http://backend:8080"))
 
-        .route("auth/users app i mean, there's work to do", p -> p
-          .path("/internal/auth")
+        .route("😎 Auth for normal users", p -> p
+          .path("/auth/login", "/auth/logout")
+          .and()
+          .method(HttpMethod.GET, HttpMethod.POST)
+          .uri("http://localhost:8081")
+        )
+
+        .route("🛡️ Auth for admin", p -> p
+          .path("/auth/**")
+          .filters(f -> {
+            f.filter(authFilter);
+            f.filter(authFilterAdmin);
+            return f;
+          })
           .uri("http://localhost:8081")
         )
       .build();

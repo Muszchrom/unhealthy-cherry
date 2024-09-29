@@ -5,15 +5,21 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.entrypoint.gateway.entities.User;
+import com.entrypoint.gateway.exceptions.InvalidPasswordException;
+import com.entrypoint.gateway.exceptions.UserNotFoundException;
+import com.entrypoint.gateway.exceptions.UsernameExistsException;
 import com.entrypoint.gateway.repositories.UserRepository;
 
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /* TODO:
@@ -30,6 +36,7 @@ import reactor.core.publisher.Mono;
 */
 
 @RestController
+@RequestMapping("/auth")
 public class AuthController {
   
   @Value("${TARGET:not_dev}")
@@ -41,11 +48,11 @@ public class AuthController {
     this.userRepository = userRepository;
   }
 
-  // DEV
-  @PostMapping("/auth/login")
+  @PostMapping("/login")
   public Mono<ResponseEntity<String>> login(@RequestBody User user, ServerHttpResponse response) {
     return userRepository.findByUsername(user.getUsername()).map(u -> {
-      if (u.getPassword().equals(user.getPassword())) {
+      BCryptPasswordEncoder bcPsswdEncoder = new BCryptPasswordEncoder();
+      if (bcPsswdEncoder.matches(user.getPassword(), u.getPassword())) {
         String token = JWTUtil.generateToken(u.getUsername(), u.getIsAdmin());
         ResponseCookie responseCookie = ResponseCookie.from("JWT", token)
           .httpOnly(true)
@@ -56,7 +63,6 @@ public class AuthController {
           .build();
 
         response.addCookie(responseCookie);
-        // response.setComplete();
         return ResponseEntity.ok("Logged in");
       } else {
         throw new BadCredentialsException("Invalid username and/or password");
@@ -64,7 +70,7 @@ public class AuthController {
     }).switchIfEmpty(Mono.error(new BadCredentialsException("Invalid username and/or password")));
   }
 
-  @GetMapping("/auth/logout")
+  @GetMapping("/logout")
   public Mono<Void> logout(ServerHttpResponse response) {
     ResponseCookie responseCookie = ResponseCookie.from("JWT", "")
       .httpOnly(true)
@@ -77,9 +83,49 @@ public class AuthController {
     response.addCookie(responseCookie);
     return response.setComplete();
   }
+  
+  @PostMapping("/user")
+  public Mono<User> register(@RequestBody User user) {
+    if (user.getPassword().length() < 7) {
+      throw new InvalidPasswordException("Password too short");
+    }
 
-  @GetMapping("/auth/login")
-  public Flux<User> getAllUsers() {
-    return userRepository.findAll();
+    return userRepository.findByUsername(user.getUsername())
+      .map(u -> {
+        Boolean t = true;
+        if (t) {
+          // why not just this throw line?
+          // because of: Type mismatch: cannot convert from Mono<Object> to Mono<User>
+          // why not true in if ()? 
+          // because Dead code after the if statement
+          // Spent too much time trying to make it look better
+          // at this point i think r2dbc is just bugged or me and chatbots are lacking some IQ points
+          
+          throw new UsernameExistsException("Username: " + user.getUsername() + " already exist");
+        }
+        return u;
+      }).switchIfEmpty(Mono.defer(() -> {
+        user.hashPassword();
+        return userRepository.save(user);
+      }));
+  }
+
+
+
+  @GetMapping("/user/{id}")
+  public Mono<User> getUser(@PathVariable Long id) {
+    return userRepository.findById(id)
+      .switchIfEmpty(Mono.error(new UserNotFoundException("User: " + id + " not found")));
+  }
+  
+  // TODO
+  // @PatchMapping("/user/{id}")
+  // public Mono<User> patchUser(@RequestBody User user) {
+  //   return userRepository
+  // }
+
+  @DeleteMapping("/user/{id}")
+  public Mono<Void> deleteUser(@PathVariable Long id) {
+    return userRepository.deleteById(id);
   }
 }
