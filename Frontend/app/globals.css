@@ -1,6 +1,10 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; 
+/* 
+  "css.lint.unknownAtRules": "ignore" added in Open User Settings (JSON) 
+  to hide unwanted warnings
+*/
 
 body {
   font-family: Arial, Helvetica, sans-serif;
