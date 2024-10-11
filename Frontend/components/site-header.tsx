@@ -1,6 +1,7 @@
 import {
   Sheet,
   SheetContent,
+  SheetClose,
   SheetDescription,
   SheetHeader,
   SheetPortal,
@@ -22,31 +23,35 @@ export function SiteHeader() {
               <path d="M3 19H21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
             </svg>
           </SheetTrigger>
-          <SheetContent side={"left"}>
+          <SheetContent side={"left"} className="flex flex-col">
             <SheetTitle aria-describedby="">Menu zdjęć</SheetTitle>
-              <div className="my-4 pb-10 pr-6">
-                <div className="flex flex-col space-y-3">
-                  <Link href="/">Grecja</Link>
-                  <Link href="/e">Góry 2021</Link>
-                  <a href="/">Bieszczady</a>
-                  <a href="/">Góry stołowe 2022</a>
+            <div className="my-4 pb-10 pr-6 flex-[1_1_0] flex flex-col">
+              <div className="flex flex-col space-y-3">
+                <SheetClose asChild><Link href="/">Grecja</Link></SheetClose>
+                <SheetClose asChild><Link href="/e">Góry 2021</Link></SheetClose>
+                <SheetClose asChild><Link href="/">Bieszczady</Link></SheetClose>
+                <SheetClose asChild><Link href="/">Góry stołowe 2022</Link></SheetClose>
+              </div>
+              <div className="pt-6">
+                <div className="flex flex-col space-y-3 pt-4">
+                  <h4 className="font-medium">Kraje</h4>
+                  <SheetClose asChild><Link className="text-muted-foreground" href="/">Polska</Link></SheetClose>
+                  <SheetClose asChild><Link className="text-muted-foreground" href="/">Włochy</Link></SheetClose>
+                  <SheetClose asChild><Link className="text-muted-foreground" href="/">Grecja</Link></SheetClose>
                 </div>
-                <div className="pt-6">
-                  <div className="flex flex-col space-y-3 pt-4">
-                    <h4 className="font-medium">Kraje</h4>
-                    <a className="text-muted-foreground" href="/">Polska</a>
-                    <a className="text-muted-foreground" href="/">Włochy</a>
-                    <a className="text-muted-foreground" href="/">Grecja</a>
-                  </div>
-                  <div className="flex flex-col space-y-3 pt-4">
-                    <h4 className="font-medium">Daty</h4>
-                    <a className="text-muted-foreground" href="/">Luty 2020</a>
-                    <a className="text-muted-foreground" href="/">Lipiec 2020</a>
-                    <a className="text-muted-foreground" href="/">Wrzesień 2021</a>
-                    <a className="text-muted-foreground" href="/">Październik 2022</a>
-                  </div>
+                <div className="flex flex-col space-y-3 pt-4">
+                  <h4 className="font-medium">Daty</h4>
+                  <SheetClose asChild><Link className="text-muted-foreground" href="/">Luty 2020</Link></SheetClose>
+                  <SheetClose asChild><Link className="text-muted-foreground" href="/">Lipiec 2020</Link></SheetClose>
+                  <SheetClose asChild><Link className="text-muted-foreground" href="/">Wrzesień 2021</Link></SheetClose>
+                  <SheetClose asChild><Link className="text-muted-foreground" href="/">Październik 2022</Link></SheetClose>
                 </div>
               </div>
+
+              <div className="mt-auto">
+              <SheetClose asChild><Link href="/login">Logowanie</Link></SheetClose>
+              </div>
+            </div>
           </SheetContent>
         </Sheet>
       </div>

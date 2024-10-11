@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { Toaster } from "sonner";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,6 +34,7 @@ export default function RootLayout({
         <div className="flex min-h-screen flex-col bg-background">
           <SiteHeader />
           {children}
+          <Toaster richColors theme="dark"/>
           <SiteFooter />
         </div>
       </body>

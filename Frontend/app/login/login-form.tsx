@@ -15,6 +15,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 
 const formSchema = z.object({
@@ -31,6 +33,8 @@ const formSchema = z.object({
 })
 
 export function LoginForm() {
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -51,7 +55,10 @@ export function LoginForm() {
     const text = await res.text();
     console.log(text)
     res.status == 200 ? console.log("great") : console.log("not great")
-    console.log(values)
+    console.log(values) 
+    res.status === 200 ? router.push("/") : toast.error("Logowanie nie powiodło się", {
+      description: "Niepoprawna nazwa użytkownika i/lub hasło"
+    })
   }
 
   return (
