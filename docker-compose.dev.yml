@@ -42,14 +42,15 @@ services:
   frontend:
     container_name: frontend
     build:
-      context: ./Frontend/app
+      context: ./Frontend
       dockerfile: Dockerfile
       target: dev
     ports:
-      - 5173:5173
+      - 3000:3000
     volumes:
-      - ./Frontend/app/:/app
+      - ./Frontend/:/app
       - /app/node_modules
+      - /app/.next
 
   database:
     container_name: database
