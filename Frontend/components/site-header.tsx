@@ -2,9 +2,6 @@ import {
   Sheet,
   SheetContent,
   SheetClose,
-  SheetDescription,
-  SheetHeader,
-  SheetPortal,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
@@ -28,7 +25,7 @@ export function SiteHeader() {
             <div className="my-4 pb-10 pr-6 flex-[1_1_0] flex flex-col">
               <div className="flex flex-col space-y-3">
                 <SheetClose asChild><Link href="/">Grecja</Link></SheetClose>
-                <SheetClose asChild><Link href="/e">Góry 2021</Link></SheetClose>
+                <SheetClose asChild><Link href="/">Góry 2021</Link></SheetClose>
                 <SheetClose asChild><Link href="/">Bieszczady</Link></SheetClose>
                 <SheetClose asChild><Link href="/">Góry stołowe 2022</Link></SheetClose>
               </div>

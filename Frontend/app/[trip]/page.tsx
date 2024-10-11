@@ -1,11 +1,11 @@
-export default function Home() {
+export default function Trip({params}: {params: {trip: string}}) {
   return (
     <main className="flex-1">
       <div className="border-b">
         <div className="container">
-          This is a homepage
+          <h1>Trip id: {params.trip}</h1>
         </div>
       </div>
     </main>
-  );
+  )
 }
