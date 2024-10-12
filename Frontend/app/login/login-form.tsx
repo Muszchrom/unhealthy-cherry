@@ -17,6 +17,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { createContext, useContext } from "react";
+import { AuthContext, useAuth } from "@/lib/AuthContext";
 
 
 const formSchema = z.object({
@@ -34,6 +36,7 @@ const formSchema = z.object({
 
 export function LoginForm() {
   const router = useRouter();
+  const {isAuthenticated, setIsAuthenticated} = useAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -52,29 +55,35 @@ export function LoginForm() {
       },
       body: JSON.stringify(values)
     })
-    const text = await res.text();
-    console.log(text)
-    res.status == 200 ? console.log("great") : console.log("not great")
-    console.log(values) 
-    res.status === 200 ? router.push("/") : toast.error("Logowanie nie powiodło się", {
-      description: "Niepoprawna nazwa użytkownika i/lub hasło"
-    })
+    
+    if (res.status === 200) {
+      setIsAuthenticated(true);
+      router.push("/");
+    } else if (res.status === 403) {
+      toast.error("Logowanie nie powiodło się", {
+        description: "Niepoprawna nazwa użytkownika i/lub hasło"
+      })
+    } else {
+      toast.error("Logowanie nie powiodło się", {
+        description: "Kod błędu: " + res.status
+      })
+    }
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Login</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input placeholder="Scaresca20" {...field} />
               </FormControl>
               <FormDescription>
-                This is your public display name.
+                Pole na wprowadzenie loginu.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -86,19 +95,19 @@ export function LoginForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Hasło</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="shadcn" {...field} />
+                <Input type="password" placeholder="Super silne hasło" {...field} />
               </FormControl>
               <FormDescription>
-                This is your password.
+                Pole na wprowadzenie hasła.
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
           />
         <div className="flex justify-end">
-          <Button type="submit">Submit</Button>
+          <Button type="submit">Dalej</Button>
         </div>
       </form>
     </Form>

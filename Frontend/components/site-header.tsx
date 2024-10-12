@@ -1,3 +1,4 @@
+"use client";
 import {
   Sheet,
   SheetContent,
@@ -5,9 +6,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { useAuth } from "@/lib/AuthContext";
 import Link from "next/link";
 
 export function SiteHeader() {
+  const { isAuthenticated } = useAuth();
+
   return (
     <header className="">
       <div className="container flex h-14 max-w-screen-2xl items-center justify-between">
@@ -46,7 +50,13 @@ export function SiteHeader() {
               </div>
 
               <div className="mt-auto">
-              <SheetClose asChild><Link href="/login">Logowanie</Link></SheetClose>
+              <SheetClose asChild>
+                {isAuthenticated ? (
+                  <Link href="/logout">{"Wyloguj się"}</Link>
+                ) : (
+                  <Link href="/login">{"Zaloguj się"}</Link>
+                )}
+              </SheetClose>
               </div>
             </div>
           </SheetContent>
