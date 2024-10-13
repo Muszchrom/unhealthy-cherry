@@ -5,9 +5,40 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { cookies } from "next/headers";
 import Link from "next/link";
 
-export function SiteHeader() {
+interface Category {
+  id: number,
+  category: string,
+  categoryAsPathVariable: string
+}
+
+interface Place {
+  id: number,
+  place: string,
+  placeAsPathVariable: string,
+  category: Category
+}
+
+export async function SiteHeader() {
+  const token = cookies().get("JWT")?.value;
+
+  const categories_data = await fetch("http://gateway:8081/photos/categories", {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+  const categories: Category[] = await categories_data.json();
+
+  // !!!! Places already include categories
+  const places_data = await fetch("http://gateway:8081/photos/places", {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+  const places: Place[] = await places_data.json();
+
   return (
     <header className="">
       <div className="container flex h-14 max-w-screen-2xl items-center justify-between">
@@ -24,25 +55,26 @@ export function SiteHeader() {
             <SheetTitle aria-describedby="">Menu zdjęć</SheetTitle>
             <div className="my-4 pb-10 pr-6 flex-[1_1_0] flex flex-col">
               <div className="flex flex-col space-y-3">
-                <SheetClose asChild><Link href="/">Grecja</Link></SheetClose>
-                <SheetClose asChild><Link href="/">Góry 2021</Link></SheetClose>
-                <SheetClose asChild><Link href="/">Bieszczady</Link></SheetClose>
-                <SheetClose asChild><Link href="/">Góry stołowe 2022</Link></SheetClose>
+                {categories.map((category) => 
+                  <SheetClose asChild key={category.id}>
+                    <Link href={`/${category.categoryAsPathVariable}`}>
+                      {category.category}
+                    </Link>
+                  </SheetClose>
+                )}
               </div>
               <div className="pt-6">
                 <div className="flex flex-col space-y-3 pt-4">
-                  <h4 className="font-medium">Kraje</h4>
-                  <SheetClose asChild><Link className="text-muted-foreground" href="/">Polska</Link></SheetClose>
-                  <SheetClose asChild><Link className="text-muted-foreground" href="/">Włochy</Link></SheetClose>
-                  <SheetClose asChild><Link className="text-muted-foreground" href="/">Grecja</Link></SheetClose>
+                  <h4 className="font-medium">Miejsca</h4>
+                  {places.map((place) => 
+                    <SheetClose asChild key={place.id}>
+                      <Link className="text-muted-foreground" href={`/${place.category.categoryAsPathVariable}/${place.placeAsPathVariable}`}>
+                        {place.place}
+                      </Link>
+                    </SheetClose>
+                  )}
                 </div>
-                <div className="flex flex-col space-y-3 pt-4">
-                  <h4 className="font-medium">Daty</h4>
-                  <SheetClose asChild><Link className="text-muted-foreground" href="/">Luty 2020</Link></SheetClose>
-                  <SheetClose asChild><Link className="text-muted-foreground" href="/">Lipiec 2020</Link></SheetClose>
-                  <SheetClose asChild><Link className="text-muted-foreground" href="/">Wrzesień 2021</Link></SheetClose>
-                  <SheetClose asChild><Link className="text-muted-foreground" href="/">Październik 2022</Link></SheetClose>
-                </div>
+                
               </div>
 
               <div className="mt-auto">
