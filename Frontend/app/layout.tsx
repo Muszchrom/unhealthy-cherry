@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/lib/AuthContext";
 
@@ -34,10 +32,8 @@ export default function RootLayout({
       >
         <AuthProvider>
           <div className="flex min-h-screen flex-col bg-background">
-            <SiteHeader />
             {children}
             <Toaster richColors theme="dark"/>
-            <SiteFooter />
           </div>
         </AuthProvider>
       </body>
