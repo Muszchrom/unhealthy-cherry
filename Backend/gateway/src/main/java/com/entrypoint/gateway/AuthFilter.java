@@ -12,7 +12,6 @@ import reactor.core.publisher.Mono;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 
-// TODO: add role filter
 @Component
 public class AuthFilter implements GatewayFilter {
   
@@ -21,14 +20,14 @@ public class AuthFilter implements GatewayFilter {
     ServerHttpRequest request = exchange.getRequest();
 
     // check if JWT cookie exists
-    if (isCookieMissing(request)) {
+    if (isCookieMissing(request) && isBearerMissing(request)) {
       return this.onError(
         exchange, 
-        "Authorization cookie is missing in request or it's content is invalid", 
+        "Authorization data is missing (cookie or bearer) in request or it's contents are invalid", 
         HttpStatus.UNAUTHORIZED);
     }
 
-    String token = request.getCookies().getFirst("JWT").getValue();
+    String token = getToken(request);
 
     // Check if token is valid
     try {
@@ -43,8 +42,19 @@ public class AuthFilter implements GatewayFilter {
     return chain.filter(exchange);
   } 
 
+  private String getToken(ServerHttpRequest request) {
+    if (!isCookieMissing(request)) {
+      return request.getCookies().getFirst("JWT").getValue();
+    } 
+    return request.getHeaders().getOrEmpty("Authorization").get(0).substring(7);
+  }
+
   private boolean isCookieMissing(ServerHttpRequest request) {
     return null == request.getCookies().getFirst("JWT");
+  }
+
+  private boolean isBearerMissing(ServerHttpRequest request) {
+    return request.getHeaders().getOrEmpty("Authorization").isEmpty();
   }
 
   private Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus) {
