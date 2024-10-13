@@ -17,9 +17,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { createContext, useContext } from "react";
-import { AuthContext, useAuth } from "@/lib/AuthContext";
-
 
 const formSchema = z.object({
   username: z.string().min(3, {
@@ -36,7 +33,6 @@ const formSchema = z.object({
 
 export function LoginForm() {
   const router = useRouter();
-  const {isAuthenticated, setIsAuthenticated} = useAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -57,7 +53,6 @@ export function LoginForm() {
     })
     
     if (res.status === 200) {
-      setIsAuthenticated(true);
       router.push("/");
     } else if (res.status === 403) {
       toast.error("Logowanie nie powiodło się", {

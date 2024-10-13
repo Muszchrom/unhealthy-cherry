@@ -1,13 +1,11 @@
 "use client";
 
-import { useAuth } from "@/lib/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
 
 export default function LogOut() {
   const router = useRouter();
-  const { setIsAuthenticated } = useAuth();
 
   useEffect(() => {
     (async () => {
@@ -16,7 +14,6 @@ export default function LogOut() {
         credentials: "include"
       }).then(res => {
         if (res.status === 200) {
-          setIsAuthenticated(false);
           router.push("/login");
         } else {
           toast.error("coś poszło nie tak", {
