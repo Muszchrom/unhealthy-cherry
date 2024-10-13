@@ -5,7 +5,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { useAuth } from "@/lib/AuthContext";
 import Link from "next/link";
 
 export function SiteHeader() {
