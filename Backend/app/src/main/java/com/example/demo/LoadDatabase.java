@@ -36,10 +36,10 @@ public class LoadDatabase {
         log.info("Preloading " + placeRepository.save(place2));
         log.info("Preloading " + placeRepository.save(place3));
         
-        Photo photo1 = new Photo("hashedfile1", "jpg", place1);
-        Photo photo2 = new Photo("hashedfile2", "jpg", place2);
-        Photo photo3 = new Photo("hashedfile3", "jpg", place3);
-        Photo photo4 = new Photo("hashedfile4", "jpg", place3);
+        Photo photo1 = new Photo("0fe6fb5d7cc48fe768697b20bdbddc506f0d6abd07bc38f3bad4131f2683fb51", "jpg", place1);
+        Photo photo2 = new Photo("1f88b88e127a4c3103cf1eba773e0f34f5a9fa77be2f5f61eb91137d1babe0f6", "jpg", place2);
+        Photo photo3 = new Photo("c89a972e6ca81a2295e0e29c4a9da32ca8891c2543fc7f93ffe564c514b5b688", "jpg", place3);
+        Photo photo4 = new Photo("725f64dffd5343527d84f0058ca0babe8edffd3113c52ab6fec0c70def918acf", "jpg", place3);
         log.info("Preloading " + photoRepository.save(photo1));
         log.info("Preloading " + photoRepository.save(photo2));
         log.info("Preloading " + photoRepository.save(photo3));
