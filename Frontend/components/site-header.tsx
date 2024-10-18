@@ -5,21 +5,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { Category, Place } from "@/interfaces/interfaces";
 import { cookies } from "next/headers";
 import Link from "next/link";
-
-interface Category {
-  id: number,
-  category: string,
-  categoryAsPathVariable: string
-}
-
-interface Place {
-  id: number,
-  place: string,
-  placeAsPathVariable: string,
-  category: Category
-}
 
 export async function SiteHeader() {
   const token = cookies().get("JWT")?.value;
@@ -29,6 +17,9 @@ export async function SiteHeader() {
       Authorization: `Bearer ${token}`
     }
   });
+  
+  // if you experience an Unexpected end of JSON input at this line
+  // that means you do have an invalid cookie
   const categories: Category[] = await categories_data.json();
 
   // !!!! Places already include categories
