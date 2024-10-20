@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.entrypoint.gateway.entities.User;
+import com.entrypoint.gateway.entities.UserWithToken;
 import com.entrypoint.gateway.exceptions.InvalidPasswordException;
 import com.entrypoint.gateway.exceptions.UserNotFoundException;
 import com.entrypoint.gateway.exceptions.UsernameExistsException;
@@ -49,7 +50,7 @@ public class AuthController {
   }
 
   @PostMapping("/login")
-  public Mono<ResponseEntity<String>> login(@RequestBody User user, ServerHttpResponse response) {
+  public Mono<UserWithToken> login(@RequestBody User user, ServerHttpResponse response) {
     return userRepository.findByUsername(user.getUsername()).map(u -> {
       BCryptPasswordEncoder bcPsswdEncoder = new BCryptPasswordEncoder();
       if (bcPsswdEncoder.matches(user.getPassword(), u.getPassword())) {
@@ -63,7 +64,9 @@ public class AuthController {
           .build();
 
         response.addCookie(responseCookie);
-        return ResponseEntity.ok("Logged in");
+        UserWithToken uwt = new UserWithToken(u, token);
+        return uwt;
+        // return ResponseEntity.ok("Logged in");
       } else {
         throw new BadCredentialsException("Invalid username and/or password");
       }
