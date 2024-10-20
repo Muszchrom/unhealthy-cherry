@@ -22,19 +22,6 @@ import com.entrypoint.gateway.repositories.UserRepository;
 
 import reactor.core.publisher.Mono;
 
-/* TODO:
-- ✔️ Pick a db (postgres is fine, cba another one XD) *R2DBC is reactive 
-- ✔️ Make the db work
-- ✔️ Make username UNIQUE = TRUE
-- ✖️ Create post method for log-in. Gateway can point only to other services, excluding its own auth api https://stackoverflow.com/questions/70618318/spring-cloud-gateway-as-a-gateway-as-well-as-web-application
-- ✖️ Create post method for register (only admin can register new users) 
-- 
-- 📌 Working with R2DBC and PSQL https://www.bezkoder.com/spring-boot-r2dbc-postgresql/
-- 📌 Basically whole implementation https://www.geeksforgeeks.org/reactive-jwt-authentication-using-spring-webflux/
-
-- ✨ Auto create admin on startup with some docker-compose flags?
-*/
-
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -65,7 +52,6 @@ public class AuthController {
         response.addCookie(responseCookie);
         UserWithToken uwt = new UserWithToken(u, token);
         return uwt;
-        // return ResponseEntity.ok("Logged in");
       } else {
         throw new BadCredentialsException("Invalid username and/or password");
       }
