@@ -1,3 +1,4 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import {
   Sheet,
   SheetContent,
@@ -6,26 +7,30 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { Category, Place } from "@/interfaces/interfaces";
-import { cookies } from "next/headers";
+import { getServerSession } from "next-auth";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { Button } from "./ui/button";
+import { signOut } from "next-auth/react";
+import SignOutButton from "./sign-out-button";
 
 export async function SiteHeader() {
-  const token = cookies().get("JWT")?.value;
+  const session = await getServerSession(authOptions);
+  if (!session) redirect("/login")
 
   const categories_data = await fetch("http://gateway:8081/photos/categories", {
     headers: {
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${session.user.APIToken}`
     }
   });
   
   // if you experience an Unexpected end of JSON input at this line
   // that means you do have an invalid cookie
   const categories: Category[] = await categories_data.json();
-
   // !!!! Places already include categories
   const places_data = await fetch("http://gateway:8081/photos/places", {
     headers: {
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${session.user.APIToken}`
     }
   });
   const places: Place[] = await places_data.json();
@@ -70,7 +75,9 @@ export async function SiteHeader() {
 
               <div className="mt-auto">
               <SheetClose asChild>
-                <Link href="/logout">{"Wyloguj się"}</Link>
+                <SignOutButton />
+                
+                {/* <Link href="/logout">{"Wyloguj się"}</Link> */}
               </SheetClose>
               </div>
             </div>
