@@ -22,3 +22,12 @@ export interface Photo {
   camera: string,
   datetime: number
 }
+
+export interface APIUser {
+  token: string,
+  user: {
+    id: number,
+    username: string,
+    isAdmin: boolean
+  }
+}
