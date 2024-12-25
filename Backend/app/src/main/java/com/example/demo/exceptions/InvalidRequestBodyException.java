@@ -8,7 +8,7 @@ public class InvalidRequestBodyException extends RuntimeException {
    * @param message a message to be concatenated with default message
    */
   public InvalidRequestBodyException(String message) {
-    super("Invalid request body format" + message);
+    super("Invalid request body format. " + message);
   }
 }
 

@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -59,6 +60,9 @@ public class PhotoController {
 
   @PostMapping("/categories")
   Category newCategory(@RequestBody Category newCategory) {
+    if (newCategory.getCategory() == null || newCategory.getCategoryAsPathVariable() == null) {
+      throw new InvalidRequestBodyException("Please provide category and categoryAsPathVariable.");
+    }
     return categoryRepository.save(newCategory);
   }
 
@@ -79,7 +83,10 @@ public class PhotoController {
 
 
   @GetMapping("/places")
-  List<Place> allPlaces() {
+  List<Place> placesForCategory(@RequestParam("categoryid") Optional<Long> categoryId) {
+    if (categoryId.isPresent()) {
+      return placeRepository.findByCategoryId(categoryId.get());
+    }
     return placeRepository.findAll();
   }
 
@@ -188,7 +195,7 @@ public class PhotoController {
     } else if (file != null && details != null) { // both provided
       photo = handlePhotoStringified(details, "PATCH", id); 
     } else { // none provided
-      throw new InvalidRequestBodyException(". Multipart form data must include a \"file\" or \"deatails\" field or both.");
+      throw new InvalidRequestBodyException("Multipart form data must include a \"file\" or \"deatails\" field or both.");
     }
 
     if (file != null) {
@@ -230,7 +237,7 @@ public class PhotoController {
     try {
       photo = new ObjectMapper().readValue(photoStringified, Photo.class);
     } catch (Exception ex) {
-      throw new InvalidRequestBodyException(". Could not parse \"photo\" field");
+      throw new InvalidRequestBodyException("Could not parse \"photo\" field");
     }
 
     if (method == "PATCH") {
@@ -240,7 +247,7 @@ public class PhotoController {
     }
 
     if (method == "POST" && (photo.getPlace() == null || photo.getPlace().getId() == null)) {
-      throw new InvalidRequestBodyException(". Place id is not defined");
+      throw new InvalidRequestBodyException("Place id is not defined");
     }
     if (photo.getPlace() != null && photo.getPlace().getId() != null) {
       Place place = placeRepository.findById(photo.getPlace().getId()).orElseThrow(() -> new PlaceNotFoundException(photo.getPlace().getId()));

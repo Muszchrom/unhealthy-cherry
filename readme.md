@@ -16,6 +16,9 @@ If you're having trouble with getting back to ubuntu CLI try:
 * (Win 11) Clicking down-facing arrow next to "Open a new tab" and selecting ubuntu
 * Running `wsl --distribution <Distribution Name> --user <User Name>` in PS
 
+## Frontend
+create Frontend/.env.local file and provide `GITHUB_ID` and `GITHUB_SECRET` variables
+
 ## Backend
 * Invalid requests typically result in responses with `text/plain;charset=UTF-8` Content-Type.
 * Always use @Column("name") annotation since for example R2DBC reads isAdmin as is_admin instead of isadmin
@@ -51,6 +54,7 @@ HTTP/1.1 200 OK
 
 ### /places
 * 😎 @Get
+* 😎 @Get + ?categoryid=
 * 🛡️ @Post
 * 🛡️ @Put +/{id}
 * 🛡️ @Delete +/{id}
@@ -80,6 +84,9 @@ This is basically an auth wrapper for backend
 * 🛡️ @Get
 * 🛡️ @Patch
 * 🛡️ @Delete
+
+### bugs
+* anyone can get user by id
 
 ## pgAdmin4
 
