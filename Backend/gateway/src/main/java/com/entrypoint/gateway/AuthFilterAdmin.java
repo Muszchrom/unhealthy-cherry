@@ -3,6 +3,7 @@ package com.entrypoint.gateway;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -19,7 +20,7 @@ public class AuthFilterAdmin implements GatewayFilter{
    */
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-    String token = exchange.getRequest().getCookies().getFirst("JWT").getValue();
+    String token = getToken(exchange.getRequest());
     if ((boolean) Jwts.parser().verifyWith(JWTUtil.getSecretKey()).build().parseSignedClaims(token).getPayload().get("isAdmin")) {
       return chain.filter(exchange);
     } else {
@@ -27,5 +28,16 @@ public class AuthFilterAdmin implements GatewayFilter{
       response.setStatusCode(HttpStatus.FORBIDDEN);
       return response.setComplete();
     }
+  }
+
+  private boolean isCookieMissing(ServerHttpRequest request) {
+    return null == request.getCookies().getFirst("JWT");
+  }
+
+  private String getToken(ServerHttpRequest request) {
+    if (!isCookieMissing(request)) {
+      return request.getCookies().getFirst("JWT").getValue();
+    } 
+    return request.getHeaders().getOrEmpty("Authorization").get(0).substring(7);
   }
 }
