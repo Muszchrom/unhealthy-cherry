@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.core.io.Resource;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import com.example.demo.FileProcessingService.ResourceWithContentType;
 import com.example.demo.entities.Category;
@@ -63,6 +64,15 @@ public class PhotoController {
     if (newCategory.getCategory() == null || newCategory.getCategoryAsPathVariable() == null) {
       throw new InvalidRequestBodyException("Please provide category and categoryAsPathVariable.");
     }
+    if (
+      newCategory.getCategory().length() < 3 || newCategory.getCategory().length() > 40 ||
+      newCategory.getCategoryAsPathVariable().length() < 3 || newCategory.getCategoryAsPathVariable().length() > 40
+    ) {
+      throw new InvalidRequestBodyException("Category or path variable length is not in range (3, 40)");
+    }
+    if (!newCategory.isCategoryAsPathVariableValid()) {
+      throw new InvalidRequestBodyException("Invalid characters in categoryAsPathVariable. Please provide \"^[A-Za-z0-9_-]+$\"");
+    }
     return categoryRepository.save(newCategory);
   }
 
@@ -92,7 +102,24 @@ public class PhotoController {
 
   @PostMapping("/places")
   Place newPlace(@RequestBody Place newPlace) {
-    return placeRepository.save(newPlace);
+    if (newPlace.getCategory() == null || newPlace.getPlace() == null || newPlace.getPlaceAsPathVariable() == null) {
+      throw new InvalidRequestBodyException("Please provide category data (id, category, categoryAsPathVariable), place, placeAsPathVariable");
+    }
+    if (
+      newPlace.getPlace().length() < 3 || newPlace.getPlace().length() > 40 ||
+      newPlace.getPlaceAsPathVariable().length() < 3 || newPlace.getPlaceAsPathVariable().length() > 40
+    ) {
+      throw new InvalidRequestBodyException("Place or path variable length is not in range (3, 40)");
+    }
+    if (!newPlace.isPlaceAsPathVariableValid()) {
+      throw new InvalidRequestBodyException("Invalid characters in placeAsPathVariable. Please provide \"^[A-Za-z0-9_-]+$\"");
+    }
+
+    try {
+      return placeRepository.save(newPlace);
+    } catch (DataIntegrityViolationException e) {
+      throw new InvalidRequestBodyException("Place " + newPlace.getPlace() + " probably already exists");
+    }
   }
 
   @PutMapping("/places/{id}")
@@ -151,13 +178,6 @@ public class PhotoController {
     @RequestParam(name="details") String details
   ) {
   
-    // possible tweaks in app.props
-    // spring.servlet.multipart.max-file-size=20MB
-    // spring.servlet.multipart.max-request-size=20MB
-    // TODO:
-    // Max file size exceded error handler
-    // very good guide https://spring.io/guides/gs/uploading-files
-
     if (file == null || details == null) {
       throw new InvalidRequestBodyException(". Multipart form data must include a \"file\" and a \"deatails\" fields.");
     } 

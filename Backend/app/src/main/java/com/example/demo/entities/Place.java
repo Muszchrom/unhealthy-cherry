@@ -2,6 +2,8 @@ package com.example.demo.entities;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -78,6 +80,16 @@ public class Place {
   public void setCategory(Category category) {
     this.category = category;
   }
+
+  public boolean isPlaceAsPathVariableValid() {
+    if (this.placeAsPathVariable == null) {
+      return false;
+    }
+    Pattern pattern = Pattern.compile("^[a-z0-9_-]+$");
+    Matcher matcher = pattern.matcher(this.placeAsPathVariable);
+    return matcher.matches();
+  }
+
 
   @Override
   public boolean equals(Object o) {

@@ -2,6 +2,8 @@ package com.example.demo.entities;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -60,6 +62,15 @@ public class Category {
 
   public void setCategoryAsPathVariable(String categoryAsPathVariable) {
     this.categoryAsPathVariable = categoryAsPathVariable;
+  }
+
+  public boolean isCategoryAsPathVariableValid() {
+    if (this.categoryAsPathVariable == null) {
+      return false;
+    }
+    Pattern pattern = Pattern.compile("^[a-z0-9_-]+$");
+    Matcher matcher = pattern.matcher(this.categoryAsPathVariable);
+    return matcher.matches();
   }
 
   @Override
