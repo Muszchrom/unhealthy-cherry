@@ -4,6 +4,7 @@ import { JWT } from "next-auth/jwt"
 
 import Credentials from "next-auth/providers/credentials"
 import GithubProvider from "next-auth/providers/github"
+import { signOut } from "next-auth/react"
 
 /**
  * TODO
@@ -39,6 +40,9 @@ declare module "next-auth/jwt" {
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt"
+  },
+  pages: {
+    signIn: '/login',
   },
   providers: [
     GithubProvider({
@@ -85,7 +89,11 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
-    session({ session, token }: { session: Session, token: JWT}) {
+    async session({ session, token }: { session: Session, token: JWT}) {
+      const res = await fetch("http://gateway:8081/photos/categories", {
+        headers: {Authorization: `Bearer ${token.APIToken}`}
+      });
+      if (res.status === 403) await signOut();
       if (!session.user) return session;
       session.user.id = token.id;
       session.user.username = token.username;

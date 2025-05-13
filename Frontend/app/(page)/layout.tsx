@@ -9,7 +9,9 @@ export default function DashboardLayout({
   return (
     <>
       <SiteHeader />
-      {children}
+      <main className="container w-full px-4 flex flex-col flex-1 gap-8 row-start-2 items-center sm:items-start ">
+        {children}
+      </main>
       <SiteFooter />
     </>
   )

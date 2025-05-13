@@ -7,7 +7,7 @@ export default function Place({params}: {params: {category: string, place: strin
         <div className="container">
           <h1>Category: {params.category}</h1>
           <h1>Place: {params.place}</h1>
-          <Contents category={params.category} place={params.place}></Contents>
+          {/* <Contents category={params.category} place={params.place}></Contents> */}
         </div>
       </div>
     </main>
